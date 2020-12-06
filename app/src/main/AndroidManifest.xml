@@ -3,6 +3,7 @@
     package="ru.gressor.movies_browser">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MoviesBrowser">
 
-        <activity android:name="ru.gressor.movies_browser.MainActivity">
+        <activity android:name="ru.gressor.movies_browser.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
