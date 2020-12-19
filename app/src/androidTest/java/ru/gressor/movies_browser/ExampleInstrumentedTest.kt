@@ -1,4 +1,4 @@
-package ru.gressor.aahomework
+package ru.gressor.movies_browser
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("ru.gressor.aahomework", appContext.packageName)
+        assertEquals("ru.gressor.movie_browser", appContext.packageName)
     }
 }

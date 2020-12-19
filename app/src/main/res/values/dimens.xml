@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="title_image_height">298dp</dimen>
-    <dimen name="gap_half">8dp</dimen>
-    <dimen name="gap_standard">16dp</dimen>
-    <dimen name="gap_quarter">4dp</dimen>
-    <dimen name="gap_one_and_half">24dp</dimen>
-    <dimen name="size_base">12sp</dimen>
-    <dimen name="size_larger">14sp</dimen>
-    <dimen name="size_title">40sp</dimen>
+    <dimen name="movie_title_image_height_298dp">298dp</dimen>
+    <dimen name="gap_half_8dp">8dp</dimen>
+    <dimen name="gap_standard_16dp">16dp</dimen>
+    <dimen name="gap_quarter_4dp">4dp</dimen>
+    <dimen name="gap_one_and_half_24dp">24dp</dimen>
+    <dimen name="size_base_12sp">12sp</dimen>
+    <dimen name="size_larger_14sp">14sp</dimen>
+    <dimen name="size_title_40sp">40sp</dimen>
+    <dimen name="size_micro_8sp">8sp</dimen>
 </resources>

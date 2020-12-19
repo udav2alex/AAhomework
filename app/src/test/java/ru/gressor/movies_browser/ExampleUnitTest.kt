@@ -1,4 +1,4 @@
-package ru.gressor.aahomework
+package ru.gressor.movies_browser
 
 import org.junit.Test
 

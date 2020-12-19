@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "ru.gressor.aahomework"
+        applicationId "ru.gressor.movie_browser"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
