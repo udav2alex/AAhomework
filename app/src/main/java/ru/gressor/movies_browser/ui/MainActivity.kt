@@ -3,7 +3,7 @@ package ru.gressor.movies_browser.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import ru.gressor.movies_browser.*
-import ru.gressor.movies_browser.entity.Movie
+import ru.gressor.movies_browser.data.Movie
 import ru.gressor.movies_browser.ui.adapters.MovieClickListener
 import ru.gressor.movies_browser.ui.fragments.BackArrowListener
 import ru.gressor.movies_browser.ui.fragments.MovieDetailsFragment

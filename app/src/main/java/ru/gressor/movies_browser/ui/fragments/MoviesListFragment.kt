@@ -10,14 +10,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.*
 import ru.gressor.movies_browser.R
-import ru.gressor.movies_browser.repo.stub.StubMoviesRepo
+import ru.gressor.movies_browser.data.Movie
+import ru.gressor.movies_browser.data.loadMovies
 import ru.gressor.movies_browser.ui.adapters.MovieClickListener
 import ru.gressor.movies_browser.ui.adapters.MoviesRVAdapter
 
 class MoviesListFragment : Fragment() {
     private var listener: MovieClickListener? = null
     private var moviesRV: RecyclerView? = null
+    private var moviesList: List<Movie>? = mutableListOf()
+    private var scope: CoroutineScope? = CoroutineScope(Dispatchers.Default)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,8 +38,26 @@ class MoviesListFragment : Fragment() {
         moviesRV?.run {
             layoutManager = GridLayoutManager(requireContext(), 2)
             addItemDecoration(SpacesItemDecoration(11, 11))
-            adapter = listener?.let { MoviesRVAdapter(it, StubMoviesRepo().getMovies()) }
+            adapter = listener?.let { MoviesRVAdapter(it, moviesList!!) }
         }
+
+        loadMoviesList()
+    }
+
+    private fun loadMoviesList() {
+        scope?.launch {
+            val deferred = CoroutineScope(Dispatchers.IO).async {
+                loadMovies(requireContext())
+            }
+
+            val list = deferred.await()
+            updateList(list)
+        }
+    }
+
+    private suspend fun updateList(list: List<Movie>) = withContext(Dispatchers.Main) {
+        moviesRV?.adapter = listener?.let { MoviesRVAdapter(it, list) }
+        moviesRV?.adapter?.notifyDataSetChanged()
     }
 
     override fun onAttach(context: Context) {
@@ -46,8 +68,12 @@ class MoviesListFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         listener = null
+        moviesRV = null
+        moviesList = null
+        scope?.cancel()
+        scope = null
+        super.onDestroy()
     }
 }
 

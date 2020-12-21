@@ -12,6 +12,7 @@
         android:layout_width="@dimen/cast_actor_photo_80dp"
         android:layout_height="@dimen/cast_actor_photo_80dp"
         android:contentDescription="@string/not_available"
+        android:background="@drawable/rounder_black_5dp"
         android:scaleType="centerCrop"
         android:src="@drawable/photo_chris_h"
         app:layout_constraintStart_toStartOf="parent"

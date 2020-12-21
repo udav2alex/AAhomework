@@ -14,4 +14,5 @@
     <string name="movie_card">Movie card</string>
     <string name="duration_min">%1$d min</string>
     <string name="like">Like</string>
+    <string name="minimum_age_string">%1$d+</string>
 </resources>

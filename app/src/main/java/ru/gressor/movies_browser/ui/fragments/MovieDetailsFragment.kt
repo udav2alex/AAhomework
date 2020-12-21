@@ -8,14 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.gressor.movies_browser.R
-import ru.gressor.movies_browser.entity.Movie
+import ru.gressor.movies_browser.data.Movie
+import ru.gressor.movies_browser.databinding.FragmentMovieDetailsBinding
 import ru.gressor.movies_browser.ui.adapters.ActorsRVAdapter
 
 
@@ -23,6 +22,7 @@ class MovieDetailsFragment: Fragment() {
     private var listener: BackArrowListener? = null
     private var actorsRV: RecyclerView? = null
     private var movie: Movie? = null
+    private lateinit var binding: FragmentMovieDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,65 +35,62 @@ class MovieDetailsFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_movie_details, container, false)
+    ): View {
+        binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        movie?.let {
-            populateViews(view, it)
-            setTitleImage(view, it)
+        movie?.let { populateViews(it) }
+
+        if(movie?.actors?.size ?: 0 > 0) {
+            actorsRV = view.findViewById(R.id.rv_details_cast)
+            actorsRV?.run {
+                layoutManager = LinearLayoutManager(
+                    requireContext(), LinearLayoutManager.HORIZONTAL, false
+                )
+                adapter = ActorsRVAdapter(movie?.actors ?: listOf())
+            }
+        } else {
+            binding.rvDetailsCast.visibility = View.GONE
+            binding.detailsCast.visibility = View.GONE
         }
 
-        actorsRV = view.findViewById(R.id.rv_cast)
-        actorsRV?.run {
-            layoutManager = LinearLayoutManager(
-                requireContext(), LinearLayoutManager.HORIZONTAL, false
-            )
-            adapter = ActorsRVAdapter(movie?.cast ?: listOf())
-        }
-
-        view.findViewById<View>(R.id.iv_details_back_arrow).setOnClickListener {
-            listener?.onBackArrowClicked()
-        }
-        view.findViewById<View>(R.id.tv_details_back_arrow_text).setOnClickListener {
+        view.findViewById<View>(R.id.tv_details_back_arrow).setOnClickListener {
             listener?.onBackArrowClicked()
         }
     }
 
-    private fun setTitleImage(parent: View, movie: Movie) {
-        val context = requireContext()
-        val imageView = parent.findViewById<ImageView>(R.id.iv_details_title_image)
-
-        Glide.with(context)
-            .load(
-                context.resources
-                    .getIdentifier(movie.titlePic, "drawable", context.packageName)
-            )
-            .into(parent.findViewById(R.id.iv_details_title_image))
-
+    private fun makeItGray(imageView: ImageView) {
         val matrix = floatArrayOf(
-            0.03f, 0.03f, 0.03f, 0f, 20f,
-            0.03f, 0.03f, 0.03f, 0f, 20f,
-            0.03f, 0.03f, 0.03f, 0f, 30f,
+            0.08f, 0.08f, 0.08f, 0f, 20f,
+            0.08f, 0.08f, 0.08f, 0f, 20f,
+            0.08f, 0.08f, 0.08f, 0f, 30f,
             0.00f, 0.00f, 0.00f, 1f, 0f )
 
         val colorMatrix = ColorMatrix(matrix)
         imageView.colorFilter = ColorMatrixColorFilter(colorMatrix)
     }
 
-    private fun populateViews(parent: View, movie: Movie) {
+    private fun populateViews(movie: Movie) {
         val context = requireContext()
 
-        parent.findViewById<TextView>(R.id.tv_details_pg).text = movie.pg
-        parent.findViewById<TextView>(R.id.tv_details_title).text = movie.title
-        parent.findViewById<TextView>(R.id.tv_details_genres).text = movie.genres
+        binding.run {
+            tvDetailsPg.text = context.getString(R.string.minimum_age_string, movie.minimumAge)
+            tvDetailsTitle.text = movie.title
+            tvDetailsGenres.text = movie.genres.joinToString { it.name }
+            tvDetailsReviewsCount.text = context.getString(R.string.reviews_count, movie.numberOfRatings)
+            rbDetailsRatingBar.rating = movie.ratings / 2
+            tvDetailsStorylineText.text = movie.overview
 
-        parent.findViewById<TextView>(R.id.tv_details_reviews_count).text =
-            context.getString(R.string.reviews_count, movie.reviews)
-        parent.findViewById<RatingBar>(R.id.rb_details_rating_bar).rating = movie.rating
-
-        parent.findViewById<TextView>(R.id.tv_details_storyline_text).text = movie.storyline
+            Glide
+                .with(context)
+                .load(movie.backdrop)
+                .into(ivDetailsTitleImage)
+            makeItGray(ivDetailsTitleImage)
+        }
     }
 
     override fun onAttach(context: Context) {

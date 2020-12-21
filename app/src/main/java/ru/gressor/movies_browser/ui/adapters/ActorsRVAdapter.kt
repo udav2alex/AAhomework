@@ -8,16 +8,21 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.gressor.movies_browser.R
-import ru.gressor.movies_browser.entity.Actor
+import ru.gressor.movies_browser.data.Actor
+import ru.gressor.movies_browser.databinding.ViewHolderActorBinding
 
 class ActorsRVAdapter(
     var actors: List<Actor>
 ): RecyclerView.Adapter<ActorsRVAdapter.ActorsViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ActorsViewHolder(
-        LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_holder_actor, parent, false)
-    )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActorsViewHolder {
+        val binding = ViewHolderActorBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+
+        binding.ivCastPhoto.clipToOutline = true
+
+        return ActorsViewHolder(binding)
+    }
 
     override fun onBindViewHolder(holder: ActorsViewHolder, position: Int) {
         holder.bind(actors[position])
@@ -25,7 +30,7 @@ class ActorsRVAdapter(
 
     override fun getItemCount(): Int = actors.size
 
-    class ActorsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ActorsViewHolder(binding: ViewHolderActorBinding) : RecyclerView.ViewHolder(binding.root) {
         private val castPhoto: ImageView = itemView.findViewById(R.id.iv_cast_photo)
         private val castName: TextView = itemView.findViewById(R.id.tv_cast_name)
 
@@ -34,10 +39,7 @@ class ActorsRVAdapter(
                 castName.text = it.name
 
                 Glide.with(context)
-                    .load(
-                        context.resources
-                            .getIdentifier(it.avatar, "drawable", context.packageName)
-                    )
+                    .load(it.picture)
                     .into(castPhoto)
             }
         }
