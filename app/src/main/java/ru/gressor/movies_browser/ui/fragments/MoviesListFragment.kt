@@ -20,7 +20,7 @@ import ru.gressor.movies_browser.ui.adapters.MoviesRVAdapter
 class MoviesListFragment : Fragment() {
     private var listener: MovieClickListener? = null
     private var moviesRV: RecyclerView? = null
-    private var moviesList: List<Movie>? = mutableListOf()
+    private var moviesList: MutableList<Movie>? = mutableListOf()
     private var scope: CoroutineScope? = CoroutineScope(Dispatchers.Default)
 
     override fun onCreateView(
@@ -56,7 +56,8 @@ class MoviesListFragment : Fragment() {
     }
 
     private suspend fun updateList(list: List<Movie>) = withContext(Dispatchers.Main) {
-        moviesRV?.adapter = listener?.let { MoviesRVAdapter(it, list) }
+        moviesList?.clear()
+        moviesList?.addAll(list)
         moviesRV?.adapter?.notifyDataSetChanged()
     }
 
