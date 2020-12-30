@@ -8,20 +8,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import ru.gressor.movies_browser.R
 import ru.gressor.movies_browser.data.Movie
 import ru.gressor.movies_browser.data.loadMovies
+import ru.gressor.movies_browser.repo.assets.AssetsMoviesRepo
 import ru.gressor.movies_browser.ui.adapters.MovieClickListener
 import ru.gressor.movies_browser.ui.adapters.MoviesRVAdapter
+import ru.gressor.movies_browser.viewmodel.MoviesListVModel
+import ru.gressor.movies_browser.viewmodel.MoviesListVModelFactory
 
 class MoviesListFragment : Fragment() {
     private var listener: MovieClickListener? = null
     private var moviesRV: RecyclerView? = null
     private var moviesList: MutableList<Movie>? = mutableListOf()
-    private var scope: CoroutineScope? = CoroutineScope(Dispatchers.Default)
+
+    private val viewModel: MoviesListVModel by viewModels {
+        MoviesListVModelFactory(AssetsMoviesRepo(this.requireContext(), Dispatchers.Default))
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,21 +48,13 @@ class MoviesListFragment : Fragment() {
             adapter = listener?.let { MoviesRVAdapter(it, moviesList!!) }
         }
 
-        loadMoviesList()
-    }
-
-    private fun loadMoviesList() {
-        scope?.launch {
-            val deferred = CoroutineScope(Dispatchers.IO).async {
-                loadMovies(requireContext())
-            }
-
-            val list = deferred.await()
-            updateList(list)
+        viewModel.moviesList.observe(this.viewLifecycleOwner) {
+            updateList(it)
         }
+        viewModel.loadMoviesList()
     }
 
-    private suspend fun updateList(list: List<Movie>) = withContext(Dispatchers.Main) {
+    private fun updateList(list: List<Movie>) {
         moviesList?.clear()
         moviesList?.addAll(list)
         moviesRV?.adapter?.notifyDataSetChanged()
@@ -72,17 +71,13 @@ class MoviesListFragment : Fragment() {
         listener = null
         moviesRV = null
         moviesList = null
-        scope?.cancel()
-        scope = null
         super.onDestroy()
     }
 }
 
 
-class SpacesItemDecoration(
-    private val hSpace: Int,
-    private val vSpace: Int
-) : RecyclerView.ItemDecoration() {
+class SpacesItemDecoration(private val hSpace: Int, private val vSpace: Int) :
+    RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect, view: View,
@@ -100,5 +95,6 @@ class SpacesItemDecoration(
     }
 
     private fun Context.pxInDp(dp: Int): Int = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), this.resources.displayMetrics).toInt()
+        TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), this.resources.displayMetrics
+    ).toInt()
 }

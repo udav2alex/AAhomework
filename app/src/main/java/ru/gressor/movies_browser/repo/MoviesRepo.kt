@@ -1,7 +1,8 @@
 package ru.gressor.movies_browser.repo
 
-import ru.gressor.movies_browser.entity.Movie
+import android.content.Context
+import ru.gressor.movies_browser.data.Movie
 
 interface MoviesRepo {
-    fun getMovies(): List<Movie>
+    suspend fun getMovies(): List<Movie>
 }

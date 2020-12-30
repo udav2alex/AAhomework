@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,49 +17,36 @@ import ru.gressor.movies_browser.R
 import ru.gressor.movies_browser.data.Movie
 import ru.gressor.movies_browser.databinding.FragmentMovieDetailsBinding
 import ru.gressor.movies_browser.ui.adapters.ActorsRVAdapter
+import ru.gressor.movies_browser.viewmodel.MovieDetailsVModel
+import ru.gressor.movies_browser.viewmodel.MovieDetailsVModelFactory
 
 
-class MovieDetailsFragment: Fragment() {
+class MovieDetailsFragment : Fragment() {
     private var listener: BackArrowListener? = null
-    private var actorsRV: RecyclerView? = null
-    private var movie: Movie? = null
+
     private lateinit var binding: FragmentMovieDetailsBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            movie = it.getParcelable(MOVIE_ARGUMENT)
-        }
+    private val viewModel: MovieDetailsVModel by viewModels {
+        val movie: Movie = arguments?.getParcelable(MOVIE_ARGUMENT)!!
+        MovieDetailsVModelFactory(movie)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View = FragmentMovieDetailsBinding.inflate(inflater, container, false)
+        .also { binding = it }
+        .root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        movie?.let { populateViews(it) }
-
-        if(movie?.actors?.size ?: 0 > 0) {
-            actorsRV = view.findViewById(R.id.rv_details_cast)
-            actorsRV?.run {
-                layoutManager = LinearLayoutManager(
-                    requireContext(), LinearLayoutManager.HORIZONTAL, false
-                )
-                adapter = ActorsRVAdapter(movie?.actors ?: listOf())
-            }
-        } else {
-            binding.rvDetailsCast.visibility = View.GONE
-            binding.detailsCast.visibility = View.GONE
+        viewModel.movieLiveData.observe(this.viewLifecycleOwner) {
+            populateViews(it)
         }
 
-        view.findViewById<View>(R.id.tv_details_back_arrow).setOnClickListener {
+        binding.tvDetailsBackArrow.setOnClickListener {
             listener?.onBackArrowClicked()
         }
     }
@@ -68,7 +56,8 @@ class MovieDetailsFragment: Fragment() {
             0.08f, 0.08f, 0.08f, 0f, 20f,
             0.08f, 0.08f, 0.08f, 0f, 20f,
             0.08f, 0.08f, 0.08f, 0f, 30f,
-            0.00f, 0.00f, 0.00f, 1f, 0f )
+            0.00f, 0.00f, 0.00f, 1f, 0f
+        )
 
         val colorMatrix = ColorMatrix(matrix)
         imageView.colorFilter = ColorMatrixColorFilter(colorMatrix)
@@ -81,7 +70,8 @@ class MovieDetailsFragment: Fragment() {
             tvDetailsPg.text = context.getString(R.string.minimum_age_string, movie.minimumAge)
             tvDetailsTitle.text = movie.title
             tvDetailsGenres.text = movie.genres.joinToString { it.name }
-            tvDetailsReviewsCount.text = context.getString(R.string.reviews_count, movie.numberOfRatings)
+            tvDetailsReviewsCount.text =
+                context.getString(R.string.reviews_count, movie.numberOfRatings)
             rbDetailsRatingBar.rating = movie.ratings / 2
             tvDetailsStorylineText.text = movie.overview
 
@@ -90,6 +80,22 @@ class MovieDetailsFragment: Fragment() {
                 .load(movie.backdrop)
                 .into(ivDetailsTitleImage)
             makeItGray(ivDetailsTitleImage)
+        }
+
+        setUpActorsRecycler(movie)
+    }
+
+    private fun setUpActorsRecycler(movie: Movie) {
+        if (movie.actors.isEmpty()) {
+            binding.rvDetailsCast.visibility = View.GONE
+            binding.detailsCast.visibility = View.GONE
+        } else {
+            binding.rvDetailsCast.run {
+                layoutManager = LinearLayoutManager(
+                    requireContext(), LinearLayoutManager.HORIZONTAL, false
+                )
+                adapter = ActorsRVAdapter(movie.actors)
+            }
         }
     }
 
