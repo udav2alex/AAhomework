@@ -11,11 +11,12 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
+import kotlinx.coroutines.Dispatchers
 import ru.gressor.movies_browser.R
-import ru.gressor.movies_browser.data.Movie
+import ru.gressor.movies_browser.entity.Movie
 import ru.gressor.movies_browser.databinding.FragmentMovieDetailsBinding
+import ru.gressor.movies_browser.repo.retrofit.RetrofitMoviesRepo
 import ru.gressor.movies_browser.ui.adapters.ActorsRVAdapter
 import ru.gressor.movies_browser.viewmodel.MovieDetailsVModel
 import ru.gressor.movies_browser.viewmodel.MovieDetailsVModelFactory
@@ -25,10 +26,11 @@ class MovieDetailsFragment : Fragment() {
     private var listener: BackArrowListener? = null
 
     private lateinit var binding: FragmentMovieDetailsBinding
+    private var adapter: ActorsRVAdapter? = null
 
     private val viewModel: MovieDetailsVModel by viewModels {
         val movie: Movie = arguments?.getParcelable(MOVIE_ARGUMENT)!!
-        MovieDetailsVModelFactory(movie)
+        MovieDetailsVModelFactory(movie, RetrofitMoviesRepo(Dispatchers.Default))
     }
 
     override fun onCreateView(
@@ -45,9 +47,17 @@ class MovieDetailsFragment : Fragment() {
         viewModel.movieLiveData.observe(this.viewLifecycleOwner) {
             populateViews(it)
         }
+        viewModel.loadMovie()
 
-        binding.tvDetailsBackArrow.setOnClickListener {
-            listener?.onBackArrowClicked()
+        binding.run {
+            tvDetailsBackArrow.setOnClickListener {
+                listener?.onBackArrowClicked()
+            }
+            rvDetailsCast.layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+            adapter = ActorsRVAdapter(viewModel.movieLiveData.value?.actors ?: emptyList())
+            rvDetailsCast.adapter = adapter
         }
     }
 
@@ -75,10 +85,9 @@ class MovieDetailsFragment : Fragment() {
             rbDetailsRatingBar.rating = movie.ratings / 2
             tvDetailsStorylineText.text = movie.overview
 
-            Glide
-                .with(context)
-                .load(movie.backdrop)
-                .into(ivDetailsTitleImage)
+            ivDetailsTitleImage.load(movie.backdrop) {
+                error(R.drawable.ic_like)
+            }
             makeItGray(ivDetailsTitleImage)
         }
 
@@ -90,12 +99,11 @@ class MovieDetailsFragment : Fragment() {
             binding.rvDetailsCast.visibility = View.GONE
             binding.detailsCast.visibility = View.GONE
         } else {
-            binding.rvDetailsCast.run {
-                layoutManager = LinearLayoutManager(
-                    requireContext(), LinearLayoutManager.HORIZONTAL, false
-                )
-                adapter = ActorsRVAdapter(movie.actors)
-            }
+            binding.rvDetailsCast.visibility = View.VISIBLE
+            binding.detailsCast.visibility = View.VISIBLE
+
+            adapter?.actors = movie.actors
+            adapter?.notifyDataSetChanged()
         }
     }
 

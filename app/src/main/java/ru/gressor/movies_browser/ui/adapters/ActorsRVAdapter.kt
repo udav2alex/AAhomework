@@ -1,14 +1,13 @@
 package ru.gressor.movies_browser.ui.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import ru.gressor.movies_browser.R
-import ru.gressor.movies_browser.data.Actor
+import ru.gressor.movies_browser.entity.Actor
 import ru.gressor.movies_browser.databinding.ViewHolderActorBinding
 
 class ActorsRVAdapter(
@@ -37,10 +36,9 @@ class ActorsRVAdapter(
         fun bind(actor: Actor) {
             actor.let {
                 castName.text = it.name
-
-                Glide.with(context)
-                    .load(it.picture)
-                    .into(castPhoto)
+                castPhoto.load(it.picture) {
+                    error(R.drawable.ic_like)
+                }
             }
         }
     }

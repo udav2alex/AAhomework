@@ -3,8 +3,8 @@ package ru.gressor.movies_browser.repo.assets
 import android.content.Context
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import ru.gressor.movies_browser.data.Movie
-import ru.gressor.movies_browser.data.loadMovies
+import ru.gressor.movies_browser.entity.Movie
+import ru.gressor.movies_browser.entity.loadMovies
 import ru.gressor.movies_browser.repo.MoviesRepo
 
 class AssetsMoviesRepo(
@@ -12,8 +12,12 @@ class AssetsMoviesRepo(
     private val coroutineDispatcher: CoroutineDispatcher
 ) : MoviesRepo {
 
-    override suspend fun getMovies(): List<Movie> =
+    override suspend fun getMoviesNowPlaying(): List<Movie> =
         withContext(coroutineDispatcher) {
             loadMovies(context)
         }
+
+    override suspend fun updateMovieRuntime(movie: Movie) {}
+
+    override suspend fun updateMovieActors(movie: Movie) {}
 }

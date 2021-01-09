@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.gressor.movies_browser.data.Movie
+import ru.gressor.movies_browser.entity.Movie
 import ru.gressor.movies_browser.repo.MoviesRepo
 
 class MoviesListVModel(
@@ -17,7 +17,13 @@ class MoviesListVModel(
 
     fun loadMoviesList() {
         CoroutineScope(Dispatchers.Default).launch {
-            mutableMoviesList.postValue(moviesRepo.getMovies())
+            val movies: List<Movie> = moviesRepo.getMoviesNowPlaying()
+            mutableMoviesList.postValue(movies)
+
+            for (movie in movies) {
+                moviesRepo.updateMovieRuntime(movie)
+                mutableMoviesList.postValue(movies)
+            }
         }
     }
 }

@@ -13,9 +13,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import ru.gressor.movies_browser.R
-import ru.gressor.movies_browser.data.Movie
-import ru.gressor.movies_browser.data.loadMovies
-import ru.gressor.movies_browser.repo.assets.AssetsMoviesRepo
+import ru.gressor.movies_browser.entity.Movie
+import ru.gressor.movies_browser.repo.retrofit.RetrofitMoviesRepo
 import ru.gressor.movies_browser.ui.adapters.MovieClickListener
 import ru.gressor.movies_browser.ui.adapters.MoviesRVAdapter
 import ru.gressor.movies_browser.viewmodel.MoviesListVModel
@@ -27,7 +26,7 @@ class MoviesListFragment : Fragment() {
     private var moviesList: MutableList<Movie>? = mutableListOf()
 
     private val viewModel: MoviesListVModel by viewModels {
-        MoviesListVModelFactory(AssetsMoviesRepo(this.requireContext(), Dispatchers.Default))
+        MoviesListVModelFactory(RetrofitMoviesRepo(Dispatchers.Default))
     }
 
     override fun onCreateView(

@@ -1,4 +1,4 @@
-package ru.gressor.movies_browser.data
+package ru.gressor.movies_browser.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

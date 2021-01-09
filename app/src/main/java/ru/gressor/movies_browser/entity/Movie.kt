@@ -1,4 +1,4 @@
-package ru.gressor.movies_browser.data
+package ru.gressor.movies_browser.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -13,7 +13,7 @@ data class Movie(
     val ratings: Float,
     val numberOfRatings: Int,
     val minimumAge: Int,
-    val runtime: Int,
+    var runtime: Int,
     val genres: List<Genre>,
-    val actors: List<Actor>
+    var actors: List<Actor>
 ): Parcelable

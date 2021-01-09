@@ -1,10 +1,8 @@
-package ru.gressor.movies_browser.data
+package ru.gressor.movies_browser.entity
 
 import android.content.Context
-import android.os.Parcelable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
