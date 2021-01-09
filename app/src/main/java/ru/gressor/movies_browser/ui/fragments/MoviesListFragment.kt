@@ -26,7 +26,7 @@ class MoviesListFragment : Fragment() {
     private var moviesList: MutableList<Movie>? = mutableListOf()
 
     private val viewModel: MoviesListVModel by viewModels {
-        MoviesListVModelFactory(RetrofitMoviesRepo(Dispatchers.Default))
+        MoviesListVModelFactory(RetrofitMoviesRepo(Dispatchers.IO))
     }
 
     override fun onCreateView(

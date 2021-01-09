@@ -3,14 +3,12 @@ package ru.gressor.movies_browser.repo.retrofit
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import ru.gressor.movies_browser.api.RetrofitHolder
-import ru.gressor.movies_browser.api.apiKey
 import ru.gressor.movies_browser.api.entity.ApiGenre
 import ru.gressor.movies_browser.api.entity.ApiMovie
 import ru.gressor.movies_browser.entity.Actor
 import ru.gressor.movies_browser.entity.Genre
 import ru.gressor.movies_browser.entity.Movie
 import ru.gressor.movies_browser.repo.MoviesRepo
-import java.util.*
 
 class RetrofitMoviesRepo(
     private val coroutineDispatcher: CoroutineDispatcher
@@ -23,15 +21,15 @@ class RetrofitMoviesRepo(
         val apiGenresList: List<ApiGenre> = getApiGenresList()
 
         RetrofitHolder.tmdbApi
-            .getMoviesNowPlaying(apiKey).results
+            .getMoviesNowPlaying().results
             .map {
-                moviesListItemApi2Domain(it, posterBaseUrl, backBaseUrl, apiGenresList)
+                movieApi2Domain(it, posterBaseUrl, backBaseUrl, apiGenresList)
             }
     }
 
     override suspend fun updateMovieRuntime(movie: Movie) = withContext(coroutineDispatcher) {
         movie.runtime = RetrofitHolder.tmdbApi
-            .getMovieDetails(movie.id, apiKey)
+            .getMovieDetails(movie.id)
             .runtime
     }
 
@@ -40,7 +38,7 @@ class RetrofitMoviesRepo(
         val profileBaseUrl = "$imageBaseUrl${RetrofitHolder.profileSize}"
 
         movie.actors = RetrofitHolder.tmdbApi
-            .getMovieCredits(movie.id, apiKey)
+            .getMovieCredits(movie.id)
             .apiMovieActors
             .map {
                 Actor(it.id, it.name, "$profileBaseUrl${it.picture}")
@@ -49,7 +47,7 @@ class RetrofitMoviesRepo(
 
     private suspend fun getImageBaseUrl() = RetrofitHolder.imagesBaseUrl
         ?: (RetrofitHolder.tmdbApi
-            .getConfiguration(apiKey)
+            .getConfiguration()
             .apiConfigurationImages
             .secureBaseUrl
             .also {
@@ -58,13 +56,13 @@ class RetrofitMoviesRepo(
 
     private suspend fun getApiGenresList() = RetrofitHolder.apiGenresList
         ?: (RetrofitHolder.tmdbApi
-            .getAllGenres(apiKey)
+            .getAllGenres()
             .genres
             .also {
                 RetrofitHolder.apiGenresList = it
             })
 
-    private fun moviesListItemApi2Domain(
+    private fun movieApi2Domain(
         apiMovies: ApiMovie,
         posterBaseUrl: String,
         backBaseUrl: String,
@@ -83,7 +81,7 @@ class RetrofitMoviesRepo(
             apiGenresList
                 .filter { it.id in genreIds }
                 .map { Genre(it.id, it.name) },
-            Collections.emptyList()             // artists, load later
+            emptyList()             // artists, load later
         )
     }
 }

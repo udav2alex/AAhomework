@@ -7,29 +7,17 @@ import ru.gressor.movies_browser.api.entity.*
 
 interface DataSource {
     @GET("configuration")
-    suspend fun getConfiguration(
-        @Query("api_key") apiKey: String
-    ): ApiConfigurationResponse
+    suspend fun getConfiguration(): ApiConfigurationResponse
 
     @GET("genre/movie/list")
-    suspend fun getAllGenres(
-        @Query("api_key") apiKey: String
-    ): ApiGenresListResponse
+    suspend fun getAllGenres(): ApiGenresListResponse
 
     @GET("movie/now_playing")
-    suspend fun getMoviesNowPlaying(
-        @Query("api_key") apiKey: String
-    ): ApiMoviesListResponse
+    suspend fun getMoviesNowPlaying(): ApiMoviesListResponse
 
     @GET("movie/{movie_id}")
-    suspend fun getMovieDetails(
-        @Path("movie_id") movieId: Int,
-        @Query("api_key") apiKey: String
-    ): ApiMovieDetails
+    suspend fun getMovieDetails(@Path("movie_id") movieId: Int): ApiMovieDetails
 
     @GET("movie/{movie_id}/credits")
-    suspend fun getMovieCredits(
-        @Path("movie_id") movieId: Int,
-        @Query("api_key") apiKey: String
-    ): ApiMovieCredits
+    suspend fun getMovieCredits(@Path("movie_id") movieId: Int): ApiMovieCredits
 }

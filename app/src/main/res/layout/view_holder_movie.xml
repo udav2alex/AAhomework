@@ -14,10 +14,10 @@
         android:background="@drawable/rounder_black_6dp"
         android:contentDescription="@string/title_image_description"
         android:scaleType="centerCrop"
-        android:src="@drawable/pic_avengers_the_end"
         app:layout_constraintBottom_toTopOf="@id/gl_item_image"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="2dp" />
+        tools:layout_editor_absoluteX="2dp"
+        tools:src="@drawable/tools_test_poster" />
 
     <ImageView
         android:layout_width="match_parent"

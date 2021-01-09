@@ -16,9 +16,9 @@
             android:layout_height="@dimen/movie_title_image_height_298dp"
             android:contentDescription="@string/title_image_description"
             android:scaleType="centerCrop"
-            android:src="@drawable/orig"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/tools_test_backdrop" />
 
         <ImageView
             android:id="@+id/iv_details_title_shadow"
@@ -41,9 +41,9 @@
             android:text="@string/back_arrow_text"
             android:textColor="@color/white"
             android:textSize="@dimen/size_base_12sp"
+            app:drawableStartCompat="@drawable/ic_back_arrow"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:drawableStartCompat="@drawable/ic_back_arrow" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_details_pg"

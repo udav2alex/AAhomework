@@ -30,7 +30,7 @@ class MovieDetailsFragment : Fragment() {
 
     private val viewModel: MovieDetailsVModel by viewModels {
         val movie: Movie = arguments?.getParcelable(MOVIE_ARGUMENT)!!
-        MovieDetailsVModelFactory(movie, RetrofitMoviesRepo(Dispatchers.Default))
+        MovieDetailsVModelFactory(movie, RetrofitMoviesRepo(Dispatchers.IO))
     }
 
     override fun onCreateView(
