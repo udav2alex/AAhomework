@@ -5,13 +5,14 @@
     <string name="parental_advisory_13">13+</string>
     <string name="movie_title">Avengers:&#160; End&#160;Game</string>
     <string name="movie_tags">Action, Adventure, Fantasy</string>
-    <string name="reviews_count">125 reviews</string>
+    <string name="reviews_count">%1$d reviews</string>
     <string name="storyline">Storyline</string>
     <string name="storyline_text">After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos\' actions and restore balance to the universe.</string>
     <string name="cast">Cast</string>
     <string name="not_available">Not available</string>
     <string name="movies_list">Movies list</string>
     <string name="movie_card">Movie card</string>
-    <string name="movie_duration">137 min</string>
+    <string name="duration_min">%1$d min</string>
     <string name="like">Like</string>
+    <string name="minimum_age_string">%1$d+</string>
 </resources>

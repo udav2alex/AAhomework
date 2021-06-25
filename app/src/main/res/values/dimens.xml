@@ -9,4 +9,5 @@
     <dimen name="size_larger_14sp">14sp</dimen>
     <dimen name="size_title_40sp">40sp</dimen>
     <dimen name="size_micro_8sp">8sp</dimen>
+    <dimen name="cast_actor_photo_80dp">80dp</dimen>
 </resources>
